@@ -163,19 +163,19 @@ set(greatdf['基金名称'])
 #====================================开始分模块
 greatdf.columns
 tmp1=(greatdf[
-        (greatdf['业务分类']=="上交所固定收益平台") | 
-        (greatdf["业务分类"]=="交易所债券借贷业务") | 
-        (greatdf["业务分类"]=="交易所大宗交易") | 
-        (greatdf["业务分类"]=="银行间业务") |
-        (greatdf["业务分类"]=="银行间买断式回购") |
-        (greatdf["业务分类"]=="银行间协议转让")]
+        (greatdf['业务分类']=="交易所业务") | 
+        (greatdf["业务分类"]=="期权业务") | 
+        (greatdf["业务分类"]=="期货业务") | 
+        (greatdf["业务分类"]=="网下申购") |
+        (greatdf["业务分类"]=="股转市场网上申购") |
+        (greatdf["业务分类"]=="融资融券信用业务")]
         ).copy()
 tmp1["当日成交金额"].sum()/100000000
 #tmp1["部门"]=tmp1['基金名称'].apply(lambda x:depart[depart["基金名称"]==x]["部门"].iat[0])
 #tmp1就是固收的
 
 #分固收公募、固收私募大类=============
-tmp1["基金名称"].unique()
+len(tmp1["日期"].unique())
 tmp1["部门"]=tmp1["基金名称"].map(lambda x:"私募" if x.find("号")!=-1 else x)
 tmp1["部门"].unique()
 tmp1["部门"]=tmp1["部门"].map(lambda x:"私募" if x.find("季季红")!=-1 else "公募")
@@ -245,13 +245,13 @@ tmp3.loc["优于"]
 shuchu=app.books.add()    
 shuchu.sheets[0].name="指令全"
 shuchu.sheets[0].range('A1').options(pd.DataFrame, index=False).value=tmp2
-shuchu.save(r'D:\desktop\20231226股票指令')
+shuchu.save(r'D:\desktop\20231229股票指令')
 del shuchu
 
 shuchu=app.books.add()    
 shuchu.sheets[0].name="指令全"
 shuchu.sheets[0].range('A1').options(pd.DataFrame, index=False).value=tmp1
-shuchu.save(r'D:\desktop\20231226权益指令')
+shuchu.save(r'D:\desktop\20231229权益指令')
 del shuchu
 
 
@@ -286,7 +286,7 @@ tmp2["资金占用"]=tmp2["当日成交金额"]*tmp2["回购天数"]
 tmp2["模拟利息"]=tmp2["资金占用"]*tmp2["指令价格(主币种)"]/100/360
 
 tmp2.columns
-tmp3=tmp2.groupby(["组合名称","委托方向"]).agg({"模拟利息":"sum","资金占用":"sum"})
+tmp3=tmp2.groupby(["委托方向"]).agg({"模拟利息":"sum","资金占用":"sum"})
 tmp3["平均价格"]=tmp3["模拟利息"]/tmp3["资金占用"]*100*360
 tmp3=tmp3.reset_index(drop=False)
 tmp4=tmp2.groupby(["组合名称","委托方向","月份"]).agg({"模拟利息":"sum","资金占用":"sum"})
@@ -519,8 +519,9 @@ tmp1=(tmp1[
         (tmp1["委托方向"]=="融资回购／拆入") |
         (tmp1["委托方向"]=="融资回购／拆入")]        
         ).copy()
-tmp2=tmp1.head()
-tmp2=tmp1["交易对手"].unique()
+tmp2=tmp1["基金名称"].map(lambda x: False if x.find("号")!=-1 else True)
+tmp1=tmp1[tmp2]
+del tmp2
 
 wb=app.books.open(r"D:\desktop\12月合作机构支持情况\基础数据.xlsx")
 wb.sheets[0].name
@@ -555,52 +556,21 @@ for i in belongto.keys():
 
 tmp1["日期"]=pd.to_datetime(tmp1["日期"])
 tmp1["月份"]=tmp1["日期"].map(lambda x:x.month)
+tmp1["指令价格(主币种)"]=tmp1["指令价格(主币种)"].astype(float)
+tmp1["到期清算金额"]=tmp1["到期清算金额"].map(lambda x:float(x.replace(",","")))
+tmp1["实际利息率"]=(tmp1["到期清算金额"]/tmp1["当日成交金额"]-1)*365
+tmp1["回购天数"]=(tmp1["实际利息率"]/tmp1["指令价格(主币种)"]*100).round(0)
 tmp1["交易对手归类"]=tmp1["交易对手"].map(lambda x:belongto[x])
 tmp1["day_shift"]=tmp1["回购天数"].map(lambda x:x*pd.offsets.Day())
 tmp1["到期月份"]=(tmp1["day_shift"]+tmp1["日期"]).map(lambda x:x.month)
-tmp1["到期月份"]=(tmp1["到期月份"]-tmp1["月份"]).map(
-    lambda x:True if x!=0 else False
-    )
-tmp1["指令价格(主币种)"]=tmp1["指令价格(主币种)"].astype(float)
+tmp1["到期月份"]=(tmp1["到期月份"]-tmp1["月份"]).map(lambda x:True if x!=0 else False)
 tmp1["模拟利息"]=tmp1["当日成交金额"]*tmp1["指令价格(主币种)"]/100/360
 tmp2=copy.deepcopy(tmp1[tmp1["到期月份"]])
 
-tmp1.columns
-tmp3=tmp1.groupby(["交易对手","交易对手归类"]).agg({"模拟利息":"sum","当日成交金额":"sum"})
-tmp3["平均价格"]=tmp3["模拟利息"]/tmp3["当日成交金额"]*100*360
-tmp4=tmp2.groupby(["交易对手","交易对手归类"]).agg({"模拟利息":"sum","当日成交金额":"sum"})
-tmp4["平均价格"]=tmp4["模拟利息"]/tmp4["当日成交金额"]*100*360
-
-shuchu=app.books.add()    
-shuchu.sheets[0].name="合作机构全年正回购情况"
-shuchu.sheets[0].range('A1').options(pd.DataFrame, index=True).value=tmp3
-shuchu.sheets.add('合作机构跨月支持情况')
-shuchu.sheets[0].range('A1').options(pd.DataFrame, index=True).value=tmp4
-shuchu.save(r'D:\desktop\合作机构跨月支持情况.xlsx')
-del shuchu,tmp3,tmp4
-
-tmp1.columns
-tmp3=tmp1.groupby(["交易对手","月份"]).agg({"模拟利息":"sum","当日成交金额":"sum"})
-tmp3["平均价格"]=tmp3["模拟利息"]/tmp3["当日成交金额"]*100*360
-tmp4=tmp2.groupby(["交易对手","月份"]).agg({"模拟利息":"sum","当日成交金额":"sum"})
-tmp4["平均价格"]=tmp4["模拟利息"]/tmp4["当日成交金额"]*100*360
-
-shuchu=app.books.add()    
-shuchu.sheets[0].name="合作机构全年正回购情况"
-shuchu.sheets[0].range('A1').options(pd.DataFrame, index=True).value=tmp3
-shuchu.sheets.add('合作机构跨月支持情况')
-shuchu.sheets[0].range('A1').options(pd.DataFrame, index=True).value=tmp4
-shuchu.save(r'D:\desktop\合作机构跨月支持情况（分月）.xlsx')
-del shuchu,tmp3,tmp4
-
-month_want=12
-tmp1=tmp1[tmp1["月份"]==month_want]
-tmp2=tmp2[tmp2["月份"]==month_want]
-
-tmp3=tmp1.groupby(["交易对手","月份"]).agg({"模拟利息":"sum","当日成交金额":"sum"})
+tmp3=tmp1.groupby(["交易对手"]).agg({"模拟利息":"sum","当日成交金额":"sum"})
 tmp3["平均价格"]=tmp3["模拟利息"]/tmp3["当日成交金额"]*100*360
 tmp3["当日成交金额"]=tmp3["当日成交金额"]/100000000
-tmp4=tmp2.groupby(["交易对手","月份"]).agg({"模拟利息":"sum","当日成交金额":"sum"})
+tmp4=tmp2.groupby(["交易对手"]).agg({"模拟利息":"sum","当日成交金额":"sum"})
 tmp4["平均价格"]=tmp4["模拟利息"]/tmp4["当日成交金额"]*100*360
 tmp4["当日成交金额"]=tmp4["当日成交金额"]/100000000
 
@@ -609,23 +579,50 @@ shuchu.sheets[0].name="合作机构这个月正回购情况"
 shuchu.sheets[0].range('A1').options(pd.DataFrame, index=True).value=tmp3
 shuchu.sheets.add('合作机构跨月支持情况')
 shuchu.sheets[0].range('A1').options(pd.DataFrame, index=True).value=tmp4
-shuchu.save(r'D:\desktop\合作机构跨月支持情况（本月）.xlsx')
+shuchu.save(r'D:\desktop\交易对手维度.xlsx')
 del shuchu
 
-tmp3=tmp1.groupby(["基金名称","月份"]).agg({"模拟利息":"sum","当日成交金额":"sum"})
+wb=app.books.open(r"D:\desktop\12月合作机构支持情况\产品类型基础数据.xlsx")
+wb.sheets[0].name
+wb.sheets[0].used_range.last_cell.row
+wb.sheets[0].used_range.last_cell.column
+fundtype=wb.sheets[0].range('A1').options(pd.DataFrame,index=False,expand="table").value
+fundtype=dict(zip(fundtype.iloc[:,0],fundtype.iloc[:,1]))
+
+tmp3=tmp1.groupby(["基金名称"]).agg({"模拟利息":"sum","当日成交金额":"sum"})
 tmp3["平均价格"]=tmp3["模拟利息"]/tmp3["当日成交金额"]*100*360
 tmp3["当日成交金额"]=tmp3["当日成交金额"]/100000000
-tmp4=tmp2.groupby(["基金名称","月份"]).agg({"模拟利息":"sum","当日成交金额":"sum"})
+tmp4=tmp2.groupby(["基金名称"]).agg({"模拟利息":"sum","当日成交金额":"sum"})
 tmp4["平均价格"]=tmp4["模拟利息"]/tmp4["当日成交金额"]*100*360
 tmp4["当日成交金额"]=tmp4["当日成交金额"]/100000000
+tmp3["类型"]=tmp3.index.map(lambda x: fundtype[x])
+tmp4["类型"]=tmp4.index.map(lambda x: fundtype[x])
+tmp3=tmp3[[ '类型','模拟利息', '当日成交金额', '平均价格']]
+tmp4=tmp4[[ '类型','模拟利息', '当日成交金额', '平均价格']]
 
 shuchu=app.books.add()    
 shuchu.sheets[0].name="合作机构这个月正回购情况"
 shuchu.sheets[0].range('A1').options(pd.DataFrame, index=True).value=tmp3
 shuchu.sheets.add('合作机构跨月支持情况')
 shuchu.sheets[0].range('A1').options(pd.DataFrame, index=True).value=tmp4
-shuchu.save(r'D:\desktop\合作机构跨月支持情况（本月）.xlsx')
+shuchu.save(r'D:\desktop\产品维度.xlsx')
 del shuchu
+
+tmp3=tmp3.reset_index(drop=False)
+tmp4=tmp4.reset_index(drop=False)
+tmp5=tmp3.groupby(["类型"]).agg({"模拟利息":"sum","当日成交金额":"sum"})
+tmp6=tmp4.groupby(["类型"]).agg({"模拟利息":"sum","当日成交金额":"sum"})
+
+tmp7=list()
+for i in list(tmp5.index):
+    tmp7.append(i+"总金额"+"%.2f" % tmp5.loc[i,"当日成交金额"]+"亿元")
+",".join(tmp7)
+
+tmp7=list()
+for i in list(tmp6.index):
+    tmp7.append(i+"总金额"+"%.2f" % tmp6.loc[i,"当日成交金额"]+"亿元")
+",".join(tmp7)
+
 
 del tmp1,tmp2,friendcop
 
@@ -640,18 +637,23 @@ tmp1=(tmp1[
 
 tmp1["日期"]=pd.to_datetime(tmp1["日期"])
 tmp1["月份"]=tmp1["日期"].map(lambda x:x.month)
+tmp1["指令价格(主币种)"]=tmp1["指令价格(主币种)"].astype(float)
+tmp1["到期清算金额"]=tmp1["到期清算金额"].map(lambda x:float(x.replace(",","")))
+tmp1["实际利息率"]=(tmp1["到期清算金额"]/tmp1["当日成交金额"]-1)*365
+tmp1["回购天数"]=(tmp1["实际利息率"]/tmp1["指令价格(主币种)"]*100).round(0)
 tmp1["day_shift"]=tmp1["回购天数"].map(lambda x:x*pd.offsets.Day())
 tmp1["到期月份"]=(tmp1["day_shift"]+tmp1["日期"]).map(lambda x:x.month)
-tmp1["到期月份"]=(tmp1["到期月份"]-tmp1["月份"]).map(
-    lambda x:True if x!=0 else False
-    )
-tmp1["指令价格(主币种)"]=tmp1["指令价格(主币种)"].astype(float)
+tmp1["到期月份"]=(tmp1["到期月份"]-tmp1["月份"]).map(lambda x:True if x!=0 else False)
 tmp1["模拟利息"]=tmp1["当日成交金额"]*tmp1["指令价格(主币种)"]/100/360
+tmp1=tmp1.reset_index(drop=True)
 tmp2=copy.deepcopy(tmp1[tmp1["到期月份"]])
+tmp3=tmp2[tmp2["证券代码"]=="R004"].index
+tmp2.loc[tmp3,"证券名称"]="R001"
 
 tmp1.columns
-tmp3=tmp2.groupby(["基金名称","证券代码","委托方向","月份"]).agg({"模拟利息":"sum","当日成交金额":"sum","价格模式":"count"})
+tmp3=tmp2.groupby(["证券名称","委托方向","月份"]).agg({"模拟利息":"sum","当日成交金额":"sum","价格模式":"count"})
 tmp3["平均价格"]=tmp3["模拟利息"]/tmp3["当日成交金额"]*100*360
+tmp3["当日成交金额"]=tmp3["当日成交金额"]/100000000
 
 shuchu=app.books.add()    
 shuchu.sheets[0].name="合作机构全年正回购情况"

@@ -16,7 +16,7 @@ app.display_alerts=False
 app.screen_updating=False
 
 docxpath=r"D:\desktop"
-docxname=r"交易部周报（20231218-20231222）.docx"
+docxname=r"交易部周报(20231225-20231229).docx"
 destname=r"D:\desktop\交易部周报new.docx"
 startdate=pd.to_datetime('2023.12.25',format='%Y.%m.%d')
 enddate=pd.to_datetime('2023.12.29',format='%Y.%m.%d')
