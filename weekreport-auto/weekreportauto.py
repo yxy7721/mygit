@@ -552,7 +552,7 @@ del nextuse2,c1,c2
 
 #开始搞归因那一段
 while True:
-    if "选股贡献" in doc.paragraphs[paraflag].text:
+    if "超额收益" in doc.paragraphs[paraflag].text:
         break
     paraflag=paraflag+1
 doc.paragraphs[paraflag].runs[0].text
