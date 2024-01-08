@@ -20,7 +20,7 @@ docxname=r"交易部周报(20231225-20231229).docx"
 destname=r"D:\desktop\交易部周报new.docx"
 startdate=pd.to_datetime('2023.12.25',format='%Y.%m.%d')
 enddate=pd.to_datetime('2023.12.29',format='%Y.%m.%d')
-beixiang=186.69
+beixiang=-55.25
 
 
 excelspath=r"D:\desktop\zhoubao"

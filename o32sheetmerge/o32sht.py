@@ -86,6 +86,8 @@ tmp1=(greatdf[
         (greatdf['基金名称']=="财昱1号") |
         (greatdf['基金名称']=="财昱2号") |
         (greatdf['基金名称']=="浚源1号") |
+        (greatdf['基金名称']=="财鑫233号") |
+        (greatdf['基金名称']=="财鑫235号") |
         (greatdf['基金名称']=="财睿1号")]
         ).copy()
 tmp1["委托方向"].unique()
@@ -110,7 +112,7 @@ tmp2=tmp2.reset_index(drop=False)
 tmp2["交易市场"]=tmp2["交易市场"].astype("category")
 tmp2["委托方向"]=tmp2["委托方向"].astype("category")
 tmp2['交易市场'].cat.reorder_categories(["银行间","交易所"], inplace=True)
-tmp2['委托方向'].cat.reorder_categories(["正回购","正回购续做","逆回购","现券","场内正回购","提交质押","转回质押"], inplace=True)
+tmp2['委托方向'].cat.reorder_categories(["正回购","正回购续做","逆回购","现券","场内正回购","场内逆回购","转回质押","回售"], inplace=True)
 tmp2['当日委托']=tmp2['当日委托']/100000000
 tmp2=tmp2.sort_values(['交易市场',"委托方向"],ascending=[1,1])
 tmp2=tmp2.reset_index(drop=1)
@@ -266,9 +268,9 @@ tmp1=(tmp1[
         (tmp1['委托方向']=="融资回购／拆入" ) ]
         ).copy()
 tmp1["基金名称"].unique()
-tmp1["部门"]=tmp1["基金名称"].map(lambda x:"私募" if x.find("号")!=-1 else x)
+tmp1["部门"]=tmp1["基金名称"].map(lambda x:"私募" if (x.find("号")!=-1) else x)
+tmp1["部门"]=tmp1["部门"].map(lambda x:"私募" if (x.find("季季红")!=-1)or(x=="私募") else "公募")
 tmp1["部门"].unique()
-tmp1["部门"]=tmp1["部门"].map(lambda x:"私募" if x.find("季季红")!=-1 else "公募")
 
 tmp1['委托方向']=tmp1['委托方向'].replace("融券回购／拆出","逆回购").copy()
 tmp1['委托方向']=tmp1['委托方向'].replace("逆回购续做","逆回购").copy()
@@ -330,9 +332,9 @@ tmp1=(tmp1[
         (tmp1['委托方向']=="逆回购续做")]
         ).copy()
 tmp1["基金名称"].unique()
-tmp1["部门"]=tmp1["基金名称"].map(lambda x:"私募" if x.find("号")!=-1 else x)
-tmp1["部门"].unique()
+tmp1["部门"]=tmp1["基金名称"].map(lambda x:"私募" if (x.find("号")!=-1) else x)
 tmp1["部门"]=tmp1["部门"].map(lambda x:"私募" if (x.find("季季红")!=-1)or(x=="私募") else "公募")
+tmp1["部门"].unique()
 
 tmp1['委托方向']=tmp1['委托方向'].replace("融券回购／拆出","逆回购").copy()
 tmp1['委托方向']=tmp1['委托方向'].replace("逆回购续做","逆回购").copy()
