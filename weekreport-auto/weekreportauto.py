@@ -16,11 +16,11 @@ app.display_alerts=False
 app.screen_updating=False
 
 docxpath=r"D:\desktop"
-docxname=r"交易部周报(20240102-20240105).docx"
+docxname=r"交易部周报（20240108-20240112）.docx"
 destname=r"D:\desktop\交易部周报new.docx"
-startdate=pd.to_datetime('2024.1.8',format='%Y.%m.%d')
-enddate=pd.to_datetime('2024.1.12',format='%Y.%m.%d')
-beixiang=-24.4
+startdate=pd.to_datetime('2024.1.15',format='%Y.%m.%d')
+enddate=pd.to_datetime('2024.1.19',format='%Y.%m.%d')
+beixiang=-234.94
 
 
 excelspath=r"D:\desktop\zhoubao"

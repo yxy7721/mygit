@@ -112,7 +112,7 @@ tmp2=tmp2.reset_index(drop=False)
 tmp2["交易市场"]=tmp2["交易市场"].astype("category")
 tmp2["委托方向"]=tmp2["委托方向"].astype("category")
 tmp2['交易市场'].cat.reorder_categories(["银行间","交易所"], inplace=True)
-tmp2['委托方向'].cat.reorder_categories(["正回购","正回购续做","逆回购","现券","场内正回购","转回质押","回售"], inplace=True)
+tmp2['委托方向'].cat.reorder_categories(["正回购","正回购续做","逆回购","现券","场内正回购","转回质押","回售","分销买入"], inplace=True)
 tmp2['当日委托']=tmp2['当日委托']/100000000
 tmp2=tmp2.sort_values(['交易市场',"委托方向"],ascending=[1,1])
 tmp2=tmp2.reset_index(drop=1)
