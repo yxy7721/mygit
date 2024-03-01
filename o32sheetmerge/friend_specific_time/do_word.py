@@ -108,7 +108,7 @@ def do_it(res):
         for i in range(gap):
             doc.tables[tableflag].rows[-2]._element.getparent().remove(doc.tables[tableflag].rows[-2]._element) 
             
-    for i in range(1,len(doc.tables[tableflag].rows)-1):
+    for i in range(1,len(doc.tables[tableflag].rows)):
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].add_run()
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
@@ -130,7 +130,7 @@ def do_it(res):
         for i in range(gap):
             doc.tables[tableflag].rows[-2]._element.getparent().remove(doc.tables[tableflag].rows[-2]._element) 
             
-    for i in range(1,len(doc.tables[tableflag].rows)-1):
+    for i in range(1,len(doc.tables[tableflag].rows)):
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].add_run()
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
@@ -152,7 +152,7 @@ def do_it(res):
         for i in range(gap):
             doc.tables[tableflag].rows[-2]._element.getparent().remove(doc.tables[tableflag].rows[-2]._element) 
             
-    for i in range(1,len(doc.tables[tableflag].rows)-1):
+    for i in range(1,len(doc.tables[tableflag].rows)):
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].add_run()
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
@@ -174,7 +174,7 @@ def do_it(res):
         for i in range(gap):
             doc.tables[tableflag].rows[-2]._element.getparent().remove(doc.tables[tableflag].rows[-2]._element) 
             
-    for i in range(1,len(doc.tables[tableflag].rows)-1):
+    for i in range(1,len(doc.tables[tableflag].rows)):
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].add_run()
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
@@ -196,7 +196,7 @@ def do_it(res):
         for i in range(gap):
             doc.tables[tableflag].rows[-2]._element.getparent().remove(doc.tables[tableflag].rows[-2]._element) 
             
-    for i in range(1,len(doc.tables[tableflag].rows)-1):
+    for i in range(1,len(doc.tables[tableflag].rows)):
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].add_run()
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
@@ -227,7 +227,7 @@ def do_it(res):
         for i in range(gap):
             doc.tables[tableflag].rows[-2]._element.getparent().remove(doc.tables[tableflag].rows[-2]._element) 
             
-    for i in range(1,len(doc.tables[tableflag].rows)-1):
+    for i in range(1,len(doc.tables[tableflag].rows)):
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].add_run()
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
@@ -249,7 +249,7 @@ def do_it(res):
         for i in range(gap):
             doc.tables[tableflag].rows[-2]._element.getparent().remove(doc.tables[tableflag].rows[-2]._element) 
             
-    for i in range(1,len(doc.tables[tableflag].rows)-1):
+    for i in range(1,len(doc.tables[tableflag].rows)):
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].add_run()
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
@@ -271,7 +271,7 @@ def do_it(res):
         for i in range(gap):
             doc.tables[tableflag].rows[-2]._element.getparent().remove(doc.tables[tableflag].rows[-2]._element) 
             
-    for i in range(1,len(doc.tables[tableflag].rows)-1):
+    for i in range(1,len(doc.tables[tableflag].rows)):
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].add_run()
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
@@ -293,7 +293,7 @@ def do_it(res):
         for i in range(gap):
             doc.tables[tableflag].rows[-2]._element.getparent().remove(doc.tables[tableflag].rows[-2]._element) 
             
-    for i in range(1,len(doc.tables[tableflag].rows)-1):
+    for i in range(1,len(doc.tables[tableflag].rows)):
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].add_run()
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
@@ -315,7 +315,7 @@ def do_it(res):
         for i in range(gap):
             doc.tables[tableflag].rows[-2]._element.getparent().remove(doc.tables[tableflag].rows[-2]._element) 
             
-    for i in range(1,len(doc.tables[tableflag].rows)-1):
+    for i in range(1,len(doc.tables[tableflag].rows)):
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].add_run()
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]

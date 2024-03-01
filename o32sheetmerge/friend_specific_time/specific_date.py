@@ -15,7 +15,7 @@ import copy
 
 
 def get_sht(app,greatdf):
-    keydate=pd.to_datetime('2024.1.31',format='%Y.%m.%d')
+    keydate=pd.to_datetime('2024.2.29',format='%Y.%m.%d')
     tmp1=(greatdf[ 
             (greatdf["业务分类"]=="银行间业务") ]        
             ).copy()
