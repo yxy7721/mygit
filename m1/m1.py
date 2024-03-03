@@ -14,14 +14,15 @@ import os
 import xlwings as xw
 import datetime
 import sys
-os.chdir(r'D:\desktop\mycase\m1') 
+import matplotlib.pyplot as plt
+os.chdir(r'E:\desktop\mycase\m1') 
 
 app=xw.App(visible=False,add_book=False)
 app.display_alerts=False
 app.screen_updating=False
 
 #第一步读取数据
-dirpath=r"D:\desktop\mydatabase\usclose"
+dirpath=r"E:\desktop\mydatabase\usclose"
 dirlist=os.listdir(dirpath)
 greatlis=dict()
 filenamelis=list()
@@ -83,7 +84,8 @@ del tmp1
 trades=dict()
 aum=dict()
 stock=focus[0]
-for i in range(len(df.index)):
+for i in range(len(df.index)): 
+#for i in range(33):
     dt=df.index[i]
     if i==0:
         if df.loc[dt,"close_ma_change"]==0:
@@ -97,16 +99,63 @@ for i in range(len(df.index)):
     if aum[dt_lag1]["shares"]==0:
         aum[dt]={"shares":0,"aum":aum[dt_lag1]["aum"]}
     else:
-        aum[dt]={"shares":0,
+        aum[dt]={"shares":aum[dt_lag1]["shares"],
             "aum":aum[dt_lag1]["aum"]*df.loc[dt,stock]/df.loc[dt_lag1,stock]
             }
     #是否要开仓
-    if df.loc[dt,"close_ma_change"]==1:
+    if (df.loc[dt,"close_ma_change"]==1)and(aum[dt_lag1]["shares"]==0):
         aum[dt]["shares"]=aum[dt]["aum"]/df.loc[dt,stock]
-    elif df.loc[dt,"close_ma_change"]==1:
-        aum[dt]={"shares":0,"aum":10000}
+        trades[dt]={"what":"buy","price":df.loc[dt,stock]}
+    elif (df.loc[dt,"2ma_change"]==-1)and(aum[dt_lag1]["shares"]!=0):
+        aum[dt]["shares"]=0
+        trades[dt]={"what":"sell","price":df.loc[dt,stock]}
+        
+#第五步展示净值曲线
+aum=pd.DataFrame(aum).T
+aum.index=df.index
+tmp1=pd.concat([aum["aum"],df[stock]],axis=1)
+tmp1=tmp1.div(tmp1.iloc[0])
+tmp1=(tmp1-tmp1.shift(1))/tmp1.shift(1)
+tmp1.mean()/tmp1.std()*np.sqrt(252)
+((tmp1-tmp1.cummax())/tmp1.cummax()*(-1)).max()
+         
 
-            
+tmp1=pd.concat([aum["aum"],df[stock]],axis=1)
+tmp1=tmp1.div(tmp1.iloc[0])   
+fig=plt.figure(num=1)
+plt.plot(tmp1.index,tmp1["aum"])
+plt.plot(tmp1.index,tmp1[stock])
+plt.show()
+
+#分析交易胜率赔率
+analysis=dict()
+idx=pd.Series(trades.keys()).sort_values(ascending=True)
+num=0
+for i in range(len(idx)):
+    dt=idx[i]
+    if trades[dt]["what"]=="buy":
+        num=dt
+        analysis[dt]={"buy":trades[dt]["price"],"sell":0,"get":0}
+    else:
+        analysis[num]["sell"]=trades[dt]["price"]
+        analysis[num]["get"]=analysis[num]["sell"]/analysis[num]["buy"]-1
+
+winnum,losenum=0,0
+wintotal,losetotal=0,0
+for i in analysis.keys():
+    if analysis[i]["get"]>=0:
+        winnum+=1
+        wintotal+=analysis[i]["get"]
+    else:
+        losenum+=1
+        losetotal+=analysis[i]["get"]
+
+print("winrate",(winnum/(winnum+losenum)*100),"%")
+tmp2=wintotal/winnum
+tmp3=losetotal/losenum*-1
+
+print("peilv",(tmp2/tmp3),"%")
+
 
 
 
