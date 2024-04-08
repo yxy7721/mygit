@@ -57,7 +57,7 @@ del tmp1,i,j
 
 
 
-#第三步计算MA1，MA2
+#第三步计算MA1，MA2,formerlow
 ma1=5
 ma2=22
 
@@ -73,8 +73,20 @@ for i in focus:
     tmp1["close>ma1"]=(tmp1[i]-tmp1["ma1"]).map(lambda x:
                                                   1 if x>0 else 0 
                                                   )
-    tmp1["close_ma_change"]=tmp1["close>ma1"]-tmp1["close>ma1"].shift(1)
+    tmp1["close_ma_change"]=tmp1["close>ma1"]-tmp1["close>ma1"].shift(1)    
     del tmp1["ma1>ma2"],tmp1["close>ma1"]
+    tmp1["p_lower"]="zero"
+    for j in range(len(tmp1.index)):
+        dt=tmp1.index[j]
+        tmp2=copy.deepcopy(tmp1.loc[:dt,:])
+        lower=50000
+        for k in range(len(tmp2.index)):
+            flagdt=tmp2.index[len(tmp2.index)-k-1]
+            if tmp2.loc[flagdt,i]<lower:
+                lower=tmp2.loc[flagdt,i]
+            else:
+                break
+        tmp1.loc[tmp1.index[j],"p_lower"]=lower
     tmp1=tmp1.dropna(axis=0,how="any")
 del close,greatlis,i,ma1,ma2
 df=copy.deepcopy(tmp1)
@@ -84,6 +96,7 @@ del tmp1
 trades=dict()
 aum=dict()
 stock=focus[0]
+plower=0
 for i in range(len(df.index)): 
 #for i in range(33):
     dt=df.index[i]
@@ -106,9 +119,16 @@ for i in range(len(df.index)):
     if (df.loc[dt,"close_ma_change"]==1)and(aum[dt_lag1]["shares"]==0):
         aum[dt]["shares"]=aum[dt]["aum"]/df.loc[dt,stock]
         trades[dt]={"what":"buy","price":df.loc[dt,stock]}
+        plower=df.loc[dt,"p_lower"]
     elif (df.loc[dt,"2ma_change"]==-1)and(aum[dt_lag1]["shares"]!=0):
         aum[dt]["shares"]=0
         trades[dt]={"what":"sell","price":df.loc[dt,stock]}
+        plower=0
+    elif (plower>df.loc[dt,stock])and(aum[dt_lag1]["shares"]!=0):
+        aum[dt]["shares"]=0
+        trades[dt]={"what":"sell","price":df.loc[dt,stock]}
+        plower=0
+
         
 #第五步展示净值曲线
 aum=pd.DataFrame(aum).T
@@ -117,6 +137,9 @@ tmp1=pd.concat([aum["aum"],df[stock]],axis=1)
 tmp1=tmp1.div(tmp1.iloc[0])
 tmp1=(tmp1-tmp1.shift(1))/tmp1.shift(1)
 tmp1.mean()/tmp1.std()*np.sqrt(252)
+
+tmp1=pd.concat([aum["aum"],df[stock]],axis=1)
+tmp1=tmp1.div(tmp1.iloc[0])  
 ((tmp1-tmp1.cummax())/tmp1.cummax()*(-1)).max()
          
 
@@ -154,7 +177,7 @@ print("winrate",(winnum/(winnum+losenum)*100),"%")
 tmp2=wintotal/winnum
 tmp3=losetotal/losenum*-1
 
-print("peilv",(tmp2/tmp3),"%")
+print("peilv",(tmp2/tmp3))
 
 
 
