@@ -1,2 +1,2 @@
 # mygit
-try to store my own code here
+日常的灵感代码和工作代码
