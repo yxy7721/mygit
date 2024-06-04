@@ -88,6 +88,7 @@ def do_it(res):
     for i in tmp6["类型"].unique():
         #print(i)
         tmp7=copy.deepcopy(tmp6[tmp6["类型"]==i])
+        tmp7=tmp7.sort_values(by="当日成交金额",ascending=False)
         split[i]=tmp7
 
     print(split.keys())
@@ -98,6 +99,7 @@ def do_it(res):
         tableflag=tableflag+1 
         
     tmp7=split["货币户"]
+    
     gap=len(doc.tables[tableflag].rows)-1-len(tmp7.index)
     if gap<0:
         for i in range(abs(gap)):
@@ -112,8 +114,9 @@ def do_it(res):
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].add_run()
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
+        for j in range(1,len(doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs)):
+            doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[j].text=""
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].runs[0].text="%.2f" % (tmp7.iat[i-1,2])
-
     
     while True:
         if "利率台产品" in doc.tables[tableflag].rows[1].cells[1].text:
@@ -135,6 +138,8 @@ def do_it(res):
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].runs[0].text="%.2f" % (tmp7.iat[i-1,2])
+        for j in range(1,len(doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs)):
+            doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[j].text=""
 
     while True:
         if "银行定制" in doc.tables[tableflag].rows[1].cells[1].text:
@@ -157,6 +162,8 @@ def do_it(res):
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].runs[0].text="%.2f" % (tmp7.iat[i-1,2])
+        for j in range(1,len(doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs)):
+            doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[j].text=""
 
     while True:
         if "鸿系列" in doc.tables[tableflag].rows[1].cells[1].text:
@@ -179,6 +186,8 @@ def do_it(res):
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].runs[0].text="%.2f" % (tmp7.iat[i-1,2])
+        for j in range(1,len(doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs)):
+            doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[j].text=""
  
     while True:
         if "固收+" in doc.tables[tableflag].rows[1].cells[1].text:
@@ -201,12 +210,15 @@ def do_it(res):
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].runs[0].text="%.2f" % (tmp7.iat[i-1,2])
+        for j in range(1,len(doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs)):
+            doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[j].text=""
 
 
     split=dict()
     for i in tmp5["类型"].unique():
         #print(i)
         tmp7=copy.deepcopy(tmp5[tmp5["类型"]==i])
+        tmp7=tmp7.sort_values(by="当日成交金额",ascending=False)
         split[i]=tmp7
 
     print(split.keys())
@@ -232,6 +244,8 @@ def do_it(res):
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].runs[0].text="%.2f" % (tmp7.iat[i-1,2])
+        for j in range(1,len(doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs)):
+            doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[j].text=""
 
     
     while True:
@@ -254,6 +268,8 @@ def do_it(res):
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].runs[0].text="%.2f" % (tmp7.iat[i-1,2])
+        for j in range(1,len(doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs)):
+            doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[j].text=""
 
     while True:
         if "银行定制" in doc.tables[tableflag].rows[1].cells[1].text:
@@ -276,6 +292,8 @@ def do_it(res):
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].runs[0].text="%.2f" % (tmp7.iat[i-1,2])
+        for j in range(1,len(doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs)):
+            doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[j].text=""
 
     while True:
         if "鸿系列" in doc.tables[tableflag].rows[1].cells[1].text:
@@ -298,6 +316,8 @@ def do_it(res):
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].runs[0].text="%.2f" % (tmp7.iat[i-1,2])
+        for j in range(1,len(doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs)):
+            doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[j].text=""
  
     while True:
         if "固收+" in doc.tables[tableflag].rows[1].cells[1].text:
@@ -320,6 +340,8 @@ def do_it(res):
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].add_run()       
         doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[0].text=tmp7.index[i-1]
         doc.tables[tableflag].rows[i].cells[3].paragraphs[0].runs[0].text="%.2f" % (tmp7.iat[i-1,2])
+        for j in range(1,len(doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs)):
+            doc.tables[tableflag].rows[i].cells[2].paragraphs[0].runs[j].text=""
 
 
 

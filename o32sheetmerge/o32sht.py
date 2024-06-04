@@ -58,7 +58,7 @@ del greatlis,i,j,tmp1
 shuchu=app.books.add()    
 shuchu.sheets[0].name="指令全"
 shuchu.sheets[0].range('A1').options(pd.DataFrame, index=False).value=greatdf
-shuchu.save(r'D:\desktop\231220全')
+shuchu.save(r'D:\desktop\2024Q1')
 del shuchu
 
 #至此以上，读取已完毕
@@ -165,12 +165,12 @@ set(greatdf['基金名称'])
 #====================================开始分模块
 greatdf.columns
 tmp1=(greatdf[
-        (greatdf['业务分类']=="交易所业务") | 
-        (greatdf["业务分类"]=="期权业务") | 
-        (greatdf["业务分类"]=="期货业务") | 
-        (greatdf["业务分类"]=="网下申购") |
-        (greatdf["业务分类"]=="股转市场网上申购") |
-        (greatdf["业务分类"]=="融资融券信用业务")]
+        (greatdf['业务分类']=="上交所固定收益平台") | 
+        (greatdf["业务分类"]=="交易所债券借贷业务") | 
+        (greatdf["业务分类"]=="交易所大宗交易") | 
+        (greatdf["业务分类"]=="银行间业务") |
+        (greatdf["业务分类"]=="银行间买断式回购") |
+        (greatdf["业务分类"]=="银行间协议转让")]
         ).copy()
 tmp1["当日成交金额"].sum()/100000000
 #tmp1["部门"]=tmp1['基金名称'].apply(lambda x:depart[depart["基金名称"]==x]["部门"].iat[0])
@@ -182,6 +182,25 @@ tmp1["部门"]=tmp1["基金名称"].map(lambda x:"私募" if x.find("号")!=-1 e
 tmp1["部门"].unique()
 tmp1["部门"]=tmp1["部门"].map(lambda x:"私募" if x.find("季季红")!=-1 else "公募")
 
+#找出债券交易（银行间+上固收)====================================
+greatdf.columns
+tmp1=(greatdf[
+        (greatdf['业务分类']=="银行间业务") | 
+        (greatdf["业务分类"]=="上交所固定收益平台") | 
+        (greatdf["业务分类"]=="交易所大宗交易") ]
+        ).copy()
+tmp1=(tmp1[
+        (tmp1['委托方向']=="债券买入") | 
+        (tmp1["委托方向"]=="债券卖出") ]
+        ).copy()
+
+shuchu=app.books.add()    
+shuchu.sheets[0].name="1"
+shuchu.sheets[0].range('A1').options(pd.DataFrame, index=False).value=tmp1
+#shuchu.sheets.add('2')
+#shuchu.sheets[0].range('A1').options(pd.DataFrame, index=True).value=tmp3
+shuchu.save(r'D:\desktop\三年多的债券交易总.xlsx')
+del shuchu
 
 
 

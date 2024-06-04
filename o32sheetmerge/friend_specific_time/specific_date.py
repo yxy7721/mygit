@@ -15,7 +15,9 @@ import copy
 
 
 def get_sht(app,greatdf):
-    keydate=pd.to_datetime('2024.2.29',format='%Y.%m.%d')
+    keydate=pd.to_datetime('2024.5.31',format='%Y.%m.%d')
+    keylist=[pd.to_datetime('2024.5.31',format='%Y.%m.%d')             
+             ]
     tmp1=(greatdf[ 
             (greatdf["业务分类"]=="银行间业务") ]        
             ).copy()
@@ -23,7 +25,8 @@ def get_sht(app,greatdf):
             (tmp1["委托方向"]=="融资回购／拆入") |
             (tmp1["委托方向"]=="融资回购／拆入")]        
             ).copy()
-    tmp2=tmp1["基金名称"].map(lambda x: False if x.find("号")!=-1 else True)
+    tmp2=tmp1["基金名称"].map(lambda x: "季季红" if x.find("号")!=-1 else x)
+    tmp2=tmp2.map(lambda x: False if x.find("季季红")!=-1 else True)
     tmp1=tmp1[tmp2]
     del tmp2
     
@@ -70,12 +73,14 @@ def get_sht(app,greatdf):
     tmp1["day_shift"]=tmp1["回购天数"].map(lambda x:x*pd.offsets.Day())
     
     tmp1["到期日"]=(tmp1["day_shift"]+tmp1["日期"])
-    tmp1["到期月份"]="-1"
+    tmp1["到期月份"]=False
     for i in tmp1.index:
-        if (tmp1.loc[i,"到期日"]>keydate)and(tmp1.loc[i,"日期"]<=keydate):
-            tmp1.loc[i,"到期月份"]=True
-        else:
-            tmp1.loc[i,"到期月份"]=False
+        for j in keylist:
+            keydate=j
+            if (tmp1.loc[i,"到期日"]>keydate)and(tmp1.loc[i,"日期"]<=keydate):
+                tmp1.loc[i,"到期月份"]=True
+            else:
+                tmp1.loc[i,"到期月份"]=False
     tmp1["模拟利息"]=tmp1["当日成交金额"]*tmp1["指令价格(主币种)"]/100/365
     tmp2=copy.deepcopy(tmp1[tmp1["到期月份"]])
     
@@ -130,6 +135,19 @@ def get_sht(app,greatdf):
     shuchu.save(r'D:\desktop\产品维度.xlsx')
     del shuchu
     '''
+    
+    wb=app.books.open(r"D:\desktop\12月合作机构支持情况\shortname.xlsx")
+    wb.sheets[0].name
+    wb.sheets[0].used_range.last_cell.row
+    wb.sheets[0].used_range.last_cell.column
+    shortname=wb.sheets[0].range('A1').options(pd.DataFrame,index=False,expand="table").value
+    del wb    
+    shortname=shortname.set_index("name")
+    shortname=shortname["shortname"].to_dict()
+    tmp3.index=tmp3.index.map(lambda x:shortname[x])
+    tmp4.index=tmp4.index.map(lambda x:shortname[x])
+    del shortname
+
     res["me_all"]=copy.deepcopy(tmp3)
     res["me_keytime"]=copy.deepcopy(tmp4)    
     return res
