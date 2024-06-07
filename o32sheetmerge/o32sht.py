@@ -77,6 +77,23 @@ shuchu.sheets[0].range('A1').options(pd.DataFrame, index=False).value=tmp1
 shuchu.save(r'D:\desktop\temp.xlsx')
 del shuchu
 
+#仅找出场外的
+greatdf.columns
+tmp1=(greatdf[ 
+        (greatdf["业务分类"]=="银行间业务") |
+        (greatdf["交易市场"]=="场外") |
+        (greatdf["业务分类"]=="债券一级市场")]        
+        ).copy()
+tmp2=tmp1.head()
+tmp2=tmp1["交易市场"].unique()
+
+shuchu=app.books.add()    
+shuchu.sheets[0].name="指令全"
+shuchu.sheets[0].range('A1').options(pd.DataFrame, index=False).value=tmp1
+shuchu.save(r'D:\desktop\temp.xlsx')
+del shuchu
+
+
 #仅找出委托的户
 "浚源1号" in greatdf["基金名称"].unique()
 tmp1=(greatdf[
@@ -148,6 +165,17 @@ tmp1.sum()
 tmp1.sort_values(by="日期",ascending=0)
 tmp1.mean()
 
+#临时任务：仅看成交金额
+
+for i in range(len(df.index)):
+    if df["交易市场"].iat[i]=="银行间":
+        df["当日成交金额"].iat[i]=df["当日委托金额"].iat[i]
+    elif df["交易市场"].iat[i]=="场外":
+        df["当日委托金额"].iat[i]=df["当日成交金额"].iat[i]
+        
+
+df["当日成交金额"].sum()/100000000
+
 tmp2=(greatdf[
         (greatdf['业务分类']=="交易所大宗交易")]
         ).copy()
@@ -157,6 +185,8 @@ tmp1=(greatdf[
 
 tmp1["委托方向"].unique()
 tmp1["当日委托金额"].sum()/100000000
+
+
 
 
 set(greatdf['业务分类'])
